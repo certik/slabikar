@@ -1,0 +1,107 @@
+
+This package includes "hand-written" Czech and Slovak font "slabikar".
+
+The English alphabet is the subset of Czech---so the font is usable in
+English texts too.
+
+Author:  Petr Olsak (C)  1997,  [Petr Ol\v{s}\'ak]
+Additions for Slovak alphabet: Jozef Riha 2017 (using templates by Stanislav Fila)
+Small improvements: Mari\'an Prochock\'y 2020
+Different shape of "z" in slabikar2: Petr Olsak 2020
+
+The files distributed with this package:
+
+slabikar.mf   ... the METAFONT source of the font "slabikar"
+slabikar.tfm  ... TeX font metrics
+slabikar.pfb  ... The Type1 format of the font. Use the following line
+                  in the psfonts.map:
+                  slabikar  slabikar <slabikar.pfb
+slabikar2.tfm ... the same as slabikar.tfm, but the shape of "z" is modified
+slabikar2.pfb ... the same as slabikar.pfb, but the shape of "z" is modified
+ukazka.tex    ... the example of usage of the font (in Czech language)
+README        ... this file
+slabi.tex     ... the article for Czech TeX bulletin
+csf-enc.tex   ... reencoding file for Unicode TeX engines
+
+You can use this font as free software, i.e. without warranty. 
+If you do some changes in file slabikar.mf, you MUST rename this one. 
+This font is possible to include into large TeX distributions, if all
+unchanged files listed above are included from: 
+
+http://petr.olsak.net/ftp/olsak/slabikar/.
+
+Usage:
+
+------------------------
+
+\pdfmapline{=slabikar slabikar <slabikar.pfb}
+
+\font\s=slabikar at20mm
+
+\s Text in the font Slabikar.
+
+\bye
+
+------------------------
+
+If you want different shape of "z", then you can write:
+
+------------------------
+
+\pdfmapline{=slabikar2 slabikar2 <slabikar2.pfb}
+
+\font\s=slabikar2 at20mm
+
+\s Text in the font Slabikar with different z.
+
+\bye
+
+
+===============================================================
+
+Dovolim si uvest jeden casty dotaz a moji odpoved na nej:
+
+> Dobry den,
+>
+> jiz nejaky cas  marne hledam psane pismo ze slabikare - pro Windows.
+> Pri hledani jsem narazil na Vasi praci a tak mne napadlo,
+> jestli treba nevite, kde mam hledat (Internet jsem uz vicemene 
+> prohledal, ale vsude jsou jen pisma ozdobna),
+> nebo jestli vubec takove pismo existuje?
+
+Nevim, zda takove pismo (krome fontu slabikar) existuje.
+
+   Pozn. z roku 2020: Dozvedel jsem se, ze existuje pismo Skolske,
+   viz www.skolskepismo.sk. Pismo je implementovano v OTF (OpenType).
+   Pismo Slabikar bohuzel neni ve formatu OTF, protoze TeXove ligaturni
+   popisy neumime do OTF prevest. Kdyby to někdo umel, prosim, ozvete se.
+
+Pokud chcete pismo pouzivat v operacnim systemu, pak by melo mit
+jednotlive znaky samostatne citelne a urcitym zpusobem spasovatelne
+dohromady jedno za druhe. To nelze dokonale v pripade skolniho pisma
+ze slabikare docilit: je potreba mezi nektera pismena doplnovat
+spojovaci carecky, dotahovat zacatky a konce slov dalsimi careckami atd. 
+To system ve sve obecnosti nebude automaticky delat. Na to jsou
+specialni programy, zabyvajici se praci s pismem, napriklad TeX. Ve
+svem clanku
+
+http://petr.olsak.net/ftp/olsak/slabikar/slabi.pdf
+
+prave tyto technicke vlastnosti pisma popisuji a ukazuji, jak je
+problem automatickeho doplnovani spojovacich carecek mozne resit 
+v TeXu.
+
+Chcete-li ve Windows produkovat pismo ze slabikare, mate moznost si
+instalovat TeX a toto pismo pouzit. TeX bezi i pod Vami jmenovanym
+operacim systemem a je to free program.
+
+Pokud se spokojite s rucnim doplnovanim spojovacich a dotahovacich
+carecek (prace pro vezne), muzete se zeptat pana Stanislava
+Fily (krajska pedagogicko-psychologicka poradna, Banska Bystrica), 
+ktery prevedl muj font slabikar do formatu ttf. Nevim, zda tuto
+praci pan Fila zverejnil, ale vim, ze ji udelal.
+
+Zdravim
+
+Petr Olsak
+

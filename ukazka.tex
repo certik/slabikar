@@ -1,0 +1,440 @@
+% Tento soubor je napsán v kódování UTF-8.
+% Používáte-li ve svém systému jiné kódování češtiny, nejprve překódujte
+% a zrušte tvrzení z prvního řádku.
+%
+% Zpracujte formátem pdfcsplain
+%
+% Písmo "slabikar" je volně šířeno ve zdrojové podobě slabikar.mf. 
+% Pokud provedete v souboru slabikar.mf jakoukoli změnu, musíte tento 
+% soubor nazvat jinak. Písmo slabikar je možné zařadit do TeXových instalací
+% za předpokladu, že zařadíte všechny soubory vyjmenované v README z
+%
+% http://petr.olsak.net/ftp/olsak/slabikar
+% 
+% v nezměněné podobě.
+% Autor METAFONTové implemetace písma: Petr Olšák, (C) 1997
+%
+% Před zpracováním tohoto ukázkového souboru instalujte písmo do svého
+% TeXového systému takto:
+%   1. Soubor slabikar.tfm instalujte mezi ostatní soubory *.tfm
+%   2. Soubor slabikar.pdf instalujte mezi oststní Type1 soubory *.pdf
+
+\pdfmapline{=slabikar slabikar <slabikar.pfb}
+\pdfmapline{=slabikar2 slabikar2 <slabikar2.pfb}
+
+\font\pis = slabikar at1cm
+\font\Pis = slabikar at25mm
+\font\pisnormal = slabikar
+\def\slabikar{\baselineskip=1cm \pis}
+\def\Slabikar{\baselineskip=2.5cm \Pis}
+
+\def\uv#1{\clqq#1\crqq}
+\def\titul #1\par{{\bf#1}\par\nobreak\medskip}
+\def\sub #1\par{\bigskip\noindent{\bf#1}\par\nobreak\medskip}
+
+\chardef\\=`\\
+\def\,{\thinspace}
+
+\font\mflogo=logo10
+\def\mf{{\mflogo META}\-{\mflogo FONT}}
+
+\chyph
+
+{\obeyspaces \gdef\activespace{\obeyspaces\let =\ }}
+\def\setverb{\def\do##1{\catcode`##1=12}\dospecials}
+\def\begtt{\medskip\bgroup \setverb \activespace
+  \def\par##1{\endgraf\ifx##1\par\leavevmode\fi ##1} 
+  \obeylines \startverb} 
+{\catcode`\|=0 \catcode`\\=12
+  |gdef|startverb#1\endtt{|tt#1|egroup|medskip}}
+
+
+\titul Ukázka a popis užití písma slabikar.
+
+Písmo {\tt slabikar} je třeba instalovat do \TeX{}ového
+systému. Soubory {\tt slabikar.tfm} a {\tt slabikar.pfb} zařaďte na
+obvyklá místa nebo do aktuálního adresáře.
+
+Do svého {\tt *.tex} souboru třeba napište:
+
+\begtt
+\pdfmapline{=slabikar slabikar <slabikar.pfb}
+
+\font\pis = slabikar at1cm
+\pis \baselineskip = 1cm
+\obeylines
+A~--- písmeno pro tebe,
+anděl letí do nebe,
+Andělka mu štěstí přála
+a šátečkem zamávala,
+aby neulét
+a vrátil se zpět.
+\end
+\endtt
+
+Na výstupu pak dostanete:
+
+{\slabikar
+\obeylines
+A~--- písmeno pro tebe,
+anděl letí do nebe,
+Andělka mu štěstí přála
+a šátečkem zamávala,
+aby neulét
+a vrátil se zpět.
+}
+
+\sub Principy písma
+
+Odpověď na otázku, jak je písmo uděláno, že jednotlivá písmena na sebe
+přesně navazují, jsem zařadil do článku {\it Psané písmo ze slabikáře},
+který jsem poskytl pro Zpravodaj CSTUGu~4/97.
+Zde budu stručný: každé slovo má vpředu (vlevo) automaticky připojenou
+\uv{náběhovou čárku} a na konci (vpravo) \uv{dotahovou čárku}. Je využito
+tzv.~\uv{hraničních znaků} v~\TeX{}u a \uv{zobecněných ligatur}.
+
+\sub Velikosti písma
+
+Přirozená velikost písma (tzv.~\uv{design size}) je 25\,pt.
+Tato velikost vychází z~následující písmové osnovy:
+
+\medskip
+
+\vbox{\offinterlineskip \bigskip
+\def\rightbox#1{\vbox to0pt{\vss
+   \hbox to\hsize{\hrulefill\ #1\strut}\kern-3.5pt}}
+\rightbox{horní akcentová dotažnice, 18\,pt}
+\vskip4mm
+\rightbox{verzálková dotažnice, 14\,pt}
+\vskip7mm
+\rightbox{střední výška písma, 7\,pt}
+\vskip7mm
+\vbox to 0pt{\vss\hbox{\Pis\ Šišky}\vskip-7mm\kern.15pt}
+\rightbox{účaří}
+\vskip7mm
+\rightbox{spodní dotažnice, $-7$\,pt}
+}
+\bigskip
+
+Přirozená velikost písma je měřena od spodní dotažnice k~horní akcentové
+dotažnici. To dává zmíněných 25\,pt. Zavedeme-li font pomocí klíčového
+slova {\tt scaled} nebo {\tt at}, pak písmo geometricky zvětšujeme nebo
+zmenšujeme a velikost písma může být jiná. Z~obrázku vidíme, že pokud
+volíme velikost {\tt \\baselineskip} stejnou nebo větší, než velikost
+písma, pak se při nulovém {\tt \\lineskiplimit} nemusíme bát rozhození
+řádkování. V~ukázce veršovánky na písmeno~A byla volena
+velikost písma 1cm a {\tt \\baselineskip} měla rovněž tuto hodnotu. Pro
+psané písmo je toto zvětšení na 1 centimetr velmi vhodné.
+
+Následující údaje se vztahují k~přirozené velikosti písma, tj. 25\,pt.
+Základní velikost mezislovní mezery je~3\,pt, hodnota roztažení je
+2,5\,pt a hodnota stažení je 1\,pt.
+Dodatečná velikost mezery pro {\tt\\spacefactor}$\geq2\,000$ je 2,5\,pt.
+Jednotka {\tt ex} je 7\,pt a jednotka
+{\tt em} je 20\,pt. Šířka každé číslice je 8\,pt.
+
+Vidíme, že mezislovní mezera je v~poměru k~velikosti písma poměrně
+malá. Mezi slovy psanými malými psacími písmeny je tato mezera
+vyhovující. Podstatně méně vyhovující se může zdát před velkým písmenem,
+především jako mezera mezi větami. Proto doporučuji nastavit:
+
+\begtt
+\sfcode`?=2000  \sfcode`!=2000
+\endtt
+\noindent
+aby byla mezi větami použita dodatečná mezislovní mezera.
+
+Sklon písma je nastaven na 0,3 jednotky na jednotku výšky.
+Italické korekce znaků jsou nulové, s~výjimkou velkých písmen 
+F, O, P, S, Š, T, Ť, V~a W.
+
+
+\sub Pomlčky a uvozovky.
+
+V~písmu je prostřednictvím ligatur zachována obvyklá \TeX{}ovská konvence
+pro sazbu pomlček. Samotné \uv{{\tt -}} vede na spojovník, který je kreslen
+poněkud níže, než střední výška písma. Dvojice \uv{{\tt--}} vytvoří
+krátkou pomlčku, která se hodí pro spojení ve významu \uv{až} mezi čísly.
+Je kreslena přesně na střední výšku písma. Tato pomlčka je v~písmu
+totožná se znakem \uv{mínus}. Ve stejné výšce je i dlouhá pomlčka, kterou
+dostaneme zápisem \uv{{\tt ---}}.
+
+Dvě čárky za sebou přecházejí na levou českou uvozovku a dva levé apostrofy
+vedou na pravou uvozovku. Je proto možný dvojí způsob zápisu uvozovek:
+
+\begtt
+Uvozovky ,,takové`` nebo také \uv{takové}.
+\endtt
+
+Druhý způsob použití uvozovek vychází z~předpokladu, že je makro {\tt\\uv}
+definováno například takto:
+
+\begtt
+\chardef\clqq=254  \chardef\crqq=255
+\def\uv#1{\clqq#1\crqq}
+\endtt
+
+Taková definice bývá v~českých stylech nebo formátech obvyklá.
+
+
+\sub Matematika, nebo spíše počty
+
+V~písmu jsou implementovány číslice a některé početní značky pro sčítání,
+násobení a rovnost a nerovnosti. Takové početní úkony dělají žáci v~prvních
+a druhých třídách. Když jsem já chodil do školy, říkali jsme tomuto
+počínání \uv{počty}, dnes se to vznešeně nazývá \uv{matematika}.
+
+Znaky \uv{plus}, \uv{rovná se}, kulaté závorky, hranaté závorky a znaky
+\uv{je větší} a \uv{je menší} jsou ve fontu na pozicích podle ASCII, takže
+je můžeme sázet přímo bez přechodu do matematického módu:
+
+\begtt
+5 + 7 = 12,\quad  (1 + 2) < (2 + 2)
+\endtt
+
+Mezery kolem operátorů doporučuji používat. Po zpracování dostáváme:
+\bigskip
+{\slabikar 5 + 7 = 12,\quad  (1 + 2) < (2 + 2)}
+\bigskip
+
+Znak \uv{mínus} není na ASCII pozici znaku \uv{{\tt-}}. Jak bylo řečeno
+v~předchozím odstavci, je na této pozici spojovník. Protože je ale
+krátká pomlčka zcela shodná se znakem \uv{mínus}, je možno tuto operaci
+sázet pomocí \uv{{\tt--}}, například \hbox{\tt 5 -- 7 = --2}.
+Znak \uv{mínus} od spojovníku nerozlišují jenom ignoranti.
+
+Podíváme-li se na pozice a kresby dalších znaků, které lze použít pro
+\uv{počty}, zjistíme, že může vyhovovat následující definice:
+
+\begtt
+\chardef\*=23
+\def\.{\raise1ex\hbox{\kern.1em.}}  \def\:{\raise.5ex\hbox{:}}
+2 \* (3 + 5) = 16, \quad (15 -- 3) \: 3 = 4, \quad 2 \. (3 + 5) = 16.
+\endtt
+
+{\slabikar
+\chardef\*=23
+\def\.{\raise1ex\hbox{\kern.1em.}}  \def\:{\raise.5ex\hbox{:}}
+2 \* (3 + 5) = 16, \quad (15 -- 3) \: 3 = 4, \quad  2 \. (3 + 5) = 16.
+}
+\bigskip
+
+Kdybychom nutně chtěli sázet počty v~matematickém módu, pak by bylo potřeba
+nastavit následující hodnoty. Doporučuji takové nastavení provést lokálně a
+navíc se na konci skupiny postarat o~obnovení původní hodnoty
+{\tt\\fontdimen6\\textfont2}. Tento registr totiž není lokální.
+
+\begtt
+\mathcode`+="202B     \mathcode`-="2015
+\mathcode`=="303D     \mathcode`<="303C    \mathcode`>="303E
+\mathchardef\*="2017  \def\:{\mathop{\raise.5ex\hbox{\pis:}}}
+\def\.{\mathop{\raise1ex\hbox{\pis\kern.1em.}}} \let\cdot=\.
+\mathcode`(="4028     \mathcode`)="5029
+\textfont0=\pis
+\fontdimen6\textfont2=\fontdimen6\textfont0
+$ 1-3=-1,  \quad   2\*(2+2)=8 $
+\endtt
+{\slabikar
+\mathcode`+="202B     \mathcode`-="2015
+\mathcode`=="303D     \mathcode`<="303C    \mathcode`>="303E
+\mathchardef\*="2017  \def\:{\mathop{\raise.5ex\hbox{:}}}
+\mathcode`(="4028     \mathcode`)="5029
+\textfont0=\pis
+\fontdimen6\textfont2=\fontdimen6\textfont0
+$ 1-3=-2,  \quad   2\*(2+2)=8 $
+}
+\bigskip
+
+Bohužel, písmo není připraveno k~sazbě rovnic (k~sazbě alfabetických
+proměnných) v~matematickém módu. To znamená, že nelze očekávat uspokojivý
+výsledek po zavedení {\tt\\textfont1=\\pis}, takže to ani nezkoušejte.
+Písmena totiž nejsou v~matematickém módu obklopena hraničními znaky, takže
+vycházejí jako neúplná. Uspokojivým řešením by bylo vytvořit samostatný
+font pro matematickou kurzívu psaného písma.
+
+Jednoduché rovnice ale můžeme sázet v~textovém módu:
+
+\begtt
+2 \. (x + 3) = 10, \quad x + 3 = 5, \quad  x = 2.
+\endtt
+{\slabikar
+\def\.{\raise1ex\hbox{\kern.1em.}}
+2 \. (x + 3) = 10, \quad x + 3 = 5, \quad x = 2.
+}
+\bigskip
+\noindent
+nebo v~matematickém módu, ale každou proměnnou musíme vložit do samostatného
+boxu:
+
+\begtt
+\def\p#1{\hbox{\pis#1}}
+$ 2 \. (\p x + 3) = 10, \quad \p x + 3 = 5, \quad  \p x = 2. $
+\endtt
+
+\sub Ošetření výjimek
+
+Písmo je navrženo tak, aby znaky automaticky napojovaly v~\uv{běžném}
+textu. Budeme-li chtít vysázet něco méně obvyklého, musíme provést ruční
+korekce. Například text {\tt olsak@math.feld.cvut.cz} nevychází dobře:
+
+\bigskip
+{\slabikar
+olsak@math.feld.cvut.cz
+}
+\bigskip
+
+Je to proto, že znaky \uv{zavináč} a \uv{tečka} se běžně nevyskytují uvnitř
+slova. Okolní písmena pak nejsou správně dotažena. Dotahy pro tato písmena
+zajistíme například vložením nulového kernu pomocí italické korekce:
+{\tt olsak\\/@\\/math.\\/feld.\\/cvut.\\/cz}:
+
+\bigskip
+{\slabikar
+olsak\/@\/math.\/feld.\/cvut.\/cz
+}
+\bigskip
+
+Metriky velkých písmen jsou navrženy tak, aby na ně mohla přímo navázat
+písmena malá. Ve zkratkách to pak nemusí dopadnout nejlépe. Mnohdy pomůže
+přidat italickou korekci. Srovnejte:
+
+\bigskip {\tt CSTUG:}  {\pis\ CSTUG}, \qquad
+{\tt CS\\/T\\/UG:}  {\pis\ CS\/T\/UG}.
+\bigskip
+
+Pro úplnost uvádím doporučenou definici loga \TeX{} pro toto písmo:
+
+\bigskip
+{\tt\\def\\TeX\char`{T\\lower.7ex\\hbox{E}\\kern-.17emX\char`}\ \\TeX:}
+\quad {\pis \def\TeX{T\lower.7ex\hbox{E}\kern-.17emX} \TeX}
+
+
+\sub Seznam všech znaků
+
+Rozložení znaků vychází z~ASCII a akcentovaná písmena z~ISO8859-2.
+
+Na pozicích 1--7 jsou některé speciální spojovací a dotahové čárky.
+Na pozicích 10--18 jsou některá alternativní písmena malé abecedy pro účely
+optického vyrovnání některých dvojic.
+
+Pozice 21 je \uv{mínus} alias kratší pomlčka, pozice 22 obsahuje dlouhou
+pomlčku a pozice 23 křížek pro znak násobení:
+\bigskip
+{\pis -- --- \char23}
+\bigskip
+
+Pozice 33 až 47 obsahují běžné ASCII znaky:
+\bigskip
+{\pis ! \ \char34\ \ \# \ \$ \ \% \ \& \ ' \ ( \ ) \ * \ + \ , \ - \ . \ /}
+\bigskip
+
+Na pozicích 48 až 57 jsou číslice:
+\bigskip
+{\pis 0 1 2 3 4 5 6 7 8 9}
+\bigskip
+
+Další znaky následují na pozicích 58 až 64 podle ASCII sady:
+\bigskip
+{\pis : \ ; \ < \ = \ > \ ? \ @}
+\bigskip
+
+Pozice 65 až 90 jsou vyhrazeny písmenům velké abecedy:
+\bigskip
+{\pis A~B C D E F\/ G H I~J K~L M N O\/ P\/ Q R S\/ T\/ U~V\/ W\/ X Y Z}
+\bigskip
+
+Následuje krátký úsek běžných ASCII znaků na pozicích 91 až 96:
+\bigskip
+{\pis [ \ \char92\ \ ] \ \char94\ \ \char95\ \ `}
+\bigskip
+
+V~prostoru pro malá písmena na pozicích 98 až 122 najdete fragmenty těchto
+písmen, které samy o~sobě vypadají dosti nezvykle, ale jsou vhodné pro
+napojování uvnitř slov:
+\bigskip
+{\pis abcdefghijklmnopqrstuvwxyz}
+\bigskip
+
+Následují závěrečné čtyři znaky ASCII tabulky na pozicích 123 až 126:
+\bigskip
+{\pis \char123\ \ | \ \char125\ \ \char126}
+\bigskip
+
+Akcentovaná písmena české a slovenské abecedy jsou umístěna podle ISO8859-2.
+Akcentované znaky ostatních abeced chybějí. 
+
+Na pozici 141 je znak promile a na posledních dvou pozicích 254 a 255 jsou
+znaky pro uvozovky:
+\bigskip
+{\pis \char141\ \ \char254\ \ \char255}
+\bigskip
+
+Ostatní pozice ve fontu nejsou obsazeny.
+
+\sub Alternativní písmeno z a ž
+
+V některých novějších písankách je alternativní tvar písmen z a ž, která spíše
+vypadají jako písmeno r, ale mají dole kličku. Do fontu Slabikar jsem tuto
+anomálii zařadil v roce 2020 tak, že jsem z původního fontu {\tt slabikar.pfb} vytvořil
+modifikovanou verzi {\tt slabikar2.pfb} a příslušným způsobem jsem upravil i
+{\tt.tfm} soubor na {\tt slabikar2.tfm} Chete-li vyzkoušet nebo použít tuto 
+alternativu, pište všude místo {\tt slabikar} slovo {\tt slabikar2}:
+
+\begtt
+\pdfmapline{=slabikar2 slabikar2 <slabikar2.pfb}
+
+\font\pis = slabikar2 at1cm
+\pis \baselineskip = 1cm
+
+Tady je zkouška alternativního z, například ve slově žížala.
+\endtt
+
+\font\pis = slabikar2 at1cm
+{\pis \baselineskip = 1cm
+
+Tady je zkouška alternativního z, například ve slově žížala.
+\par}
+
+\sub Závěrem
+
+
+Hotové písmo zveřejňuji v~\mf{}ovém zdroji na Internetu
+k~volnému použití. Najdete je na obvyklém místě:
+
+\bigskip
+{\tt http://petr.olsak.net/ftp/olsak/slabikar}.
+\bigskip
+
+
+
+
+\pisnormal \baselineskip=23pt \lineskiplimit=-10pt
+\def\TeX{T\lower.7ex\hbox{E}\kern-.17emX}
+\righthyphenmin=2  \emergencystretch=2em
+\hbadness=2900
+
+Toto písmo je potřeba brát spíš jako příklad, co všechno \TeX{} dovede.
+Nepředpokládám velké nasazení tohoto písma pro sazbu příštích
+slabikářů. Dokonce takovou věc ani nedoporučuji.
+
+Všechny ukázky ve slabikáři a v~písankách, které jsem měl možnost vidět,
+jsou psány lidskou rukou a ne strojem. Samozřejmě smekám před kaligrafem,
+který ty ukázky vytvořil. Člověk má na první pohled dojem, že to je
+\uv{jak když tiskne}. Fušoval jsem také do kaligrafického řemesla, a proto
+dobře vím, že pokud písmo neobsahuje žádné ozdobné prvky, musí to napsat
+skutečně profesionál. Každá chybička, která by se třeba skryla za ozdobným
+prvkem, je totiž vidět.
+
+Důležité ale je, že písmo v~dnešním slabikáři bylo skutečně napsáno jen
+\uv{jak} když tiskne a nikoli tištěno doopravdy. Písmu tak neschází
+lidský rozměr, který ten prvňák podvědomě z~toho písma asi cítí. Kdyby se
+pro sazbu ukázek použil stroj (třebaže~\TeX), písmo by tento rozměr
+ztratilo. Takové písmo by bylo chladné, stále stejné, bez výrazu,
+tedy vlastně mrtvé. Nepřeji prvňákům, aby se někdy v~budoucnu
+s~takovým chladným písmem setkali. 
+
+\medskip
+\hfill Petr Olšák
+
+
+\end

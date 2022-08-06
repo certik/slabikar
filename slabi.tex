@@ -1,0 +1,385 @@
+
+\pdfmapline{=slabikar slabikar <slabikar.pfb}
+
+\def\titul #1\par{{\bf#1}\par\nobreak\medskip}
+\def\autor #1\par{{\it #1}\medskip}
+\def\sub #1\par{\bigskip\noindent{\bf#1}\par\nobreak\medskip}
+
+\chardef\\=`\\
+\def\,{\thinspace}
+
+\font\mflogo=logo10
+\def\mf{{\mflogo META}\-{\mflogo FONT}}
+
+\hsize=30pc \vsize=46pc \emergencystretch=2em \hbadness=2000
+\chyph
+
+{\obeyspaces \gdef\activespace{\obeyspaces\let =\ }}
+\def\setverb{\def\do##1{\catcode`##1=12}\dospecials}
+\def\begtt{\medskip\bgroup \setverb \activespace
+  \def\par##1{\endgraf\ifx##1\par\leavevmode\fi ##1} 
+  \obeylines \startverb} 
+{\catcode`\|=0 \catcode`\\=12
+  |gdef|startverb#1\endtt{|tt#1|egroup|medskip}}
+
+\font\slabikar=slabikar at1cm
+\def\ukaz#1{\leavevmode\hbox{\noboundary #1\noboundary\/}}
+
+
+\titul Psané písmo ze slabikáře
+
+\autor Petr Olšák
+
+Můj syn Mirek začal chodit do první třídy a učí se tedy psát.
+Rozhodl jsem se, že naučím psát počítač stejným písmem, jaké se zrovna
+nyní Mirek učí. Znamenalo to vytvořit font v~\mf{}u s~psaným písmem
+podle slabikáře a zavést ligatury tak, aby písmena pěkně 
+k~sobě navazovala.
+
+{\slabikar \baselineskip=1cm \lineskiplimit=-1cm  \def\\{\hfil\break}
+\leftskip=\parindent  \noindent
+Odemyky-zamyky,\\ rozvažte se, jazyky!\\ Povězte mi v~řeči lidí,\\
+co kdo slyší, co kdo vidí.\\ A~z~těch slabik, slov a vět\\
+vykouzlíme celý svět.
+\par\bigskip}
+
+Přitom stačí do dokumentu napsat:
+
+\begtt
+\font\pis=slabikar at 1cm
+\def\\{\hfil\break}
+\baselineskip=1cm  \pis \noindent
+Odemyky-zamyky,\\ rozvažte se, jazyky!\\ 
+Povězte mi v řeči lidí,\\ co kdo slyší, co kdo vidí.\\ 
+A z~těch slabik, slov a vět\\ vykouzlíme celý svět.
+\end
+\endtt
+
+K~vytvoření tohoto písma jsem s~výhodou využil tzv.~\uv{zobecněných
+ligatur} a hraničních znaků. Aniž by se o~tom příliš vědělo, i takové
+vymoženosti nám \TeX{} poskytuje. V~tomto článku se pokusím zmíněné
+mechanismy podrobně popsat a ukázat jejich použití na příkladu písma
+ze slabikáře.
+
+\sub Použité vlastnosti \TeX{}u
+
+Donald Knuth zavedl algoritmy pro zobecněné ligatury a pro hraniční znaky
+až od verze \TeX{}u 3.0. Když doplňoval \TeX{}book~[1] pro tuto novou
+verzi, pokusil se neměnit stránkování původní verze této knihy a přitom
+tam zanést informace o~nových algoritmech. Protože novinek ve verzi~3.0
+bylo více, znamenalo to vyvinout nadlidské úsilí, aby ty stránky zůstaly
+v~původním stavu. Pokud člověk přesně zná rozdíly mezi verzí 2.x a 3.0, pak
+mu při četbě \TeX{}booku neujde, že se autor snažil některé formulace
+k~novým algoritmům až nemístně stlačit do malého prostoru. Konečně, na
+některé věci nevybylo místo vůbec. V~rejstříku například najdeme heslo
+{\tt\\noboundary}, ale k~němu pouze stručnou zmínku v~závorce o~tom, že:
+>>Ligatures and kerns may be influenced by invisible ``boundary''
+characters at the left and right, unless {\tt\\noboundary} appears<<. Co to
+ty ``boundary'' (hraniční) znaky jsou, se už nedovíme vůbec. K~tomu je
+potřeba se podívat do zdrojového textu \TeX{}u~[2] nebo do~[4], kde na
+straně 306 píšu:
+
+>>\TeX{} může pracovat se dvěma hraničními znaky: pravý a levý. Pravý klade
+(jen teoreticky) na konec každého slova (souvislé posloupnosti znaků ze
+stejného fontu bez mezer). Levý hraniční znak se klade analogicky na
+začátek každého slova. Tyto znaky fakticky nejsou sázeny, ale mohou ovlivnit
+sazbu při vyhodnocování ligatur nebo implicitních kernů s~okrajovým
+skutečně viditelným znakem ve slově. Viditelný znak $\alpha$ se může na
+začátku slova proměnit v~ligaturu nebo před ním může být implicitní kern,
+pokud levý hraniční znak má ve svém odkazu do ligačního a kerningového
+programu test na znak $\alpha$. Rovněž se znak $\alpha$ na konci slova může
+proměnit v~ligaturu nebo za ním může být implicitní kern, pokud tento
+znak má odkaz do ligačního a kerningového programu, kde je test na pravý
+hraniční znak.<<
+
+Levý hraniční znak je v~metrice fontu charakterizován ukazatelem do
+ligačního a kerningového programu, zatímco pravému hraničnímu znaku
+musí být přiřazen nějaký kód. Použití tohoto kódu v~ligačním a
+kerningovém programu pak znamená, že se odkazujeme na pravý hraniční znak.
+
+V~\mf{}u je pro levý hraniční znak zaveden speciální symbol~\uv{{\tt ||:}},
+který se použije jako návěští v~záznamu {\tt ligtable}. 
+Není-li toto návěští nikde použito, \TeX{} s~levým hraničním znakem
+nepracuje. 
+Pro případ pravého hraničního znaku je nutno v~\mf{}u naplnit primitivní
+proměnnou {\tt boundarychar} zvoleným kódem. Tento kód pak můžeme
+používat v~záznamu {\tt ligtable}. Není-li tato proměnná naplněna
+nebo má hodnotu mimo rozsah 0--255, pak \TeX{} s~pravým hraničním
+znakem nepracuje.
+
+Kromě hraničních znaků je \TeX{} vybaven schopností pracovat
+s~tzv.~\uv{zobecněnými ligaturami}. Informace o~nich
+můžeme rovněž hledat v~[2] nebo~[4].
+Nechť dvojice znaků $\alpha\beta$ tvoří ligaturu $\gamma$. Pak
+\TeX{} nejprve teoreticky vytvoří trojici $\alpha\gamma\beta$ a dále
+podle dodatečných údajů v~metrice
+rozhodne o~tom, zda $\alpha$ či $\beta$ či oba tyto znaky
+ze sazby vyhodí.
+
+V~\mf{}booku~[3] pak najdeme možnosti, jak tyto zobecněné ligatury
+zapisovat do záznamu {\tt ligtable} v~\mf{}ovém textu. Všechny případy
+jsou zahrnuty do následující tabulky:
+
+$$\vbox{
+\halign{\tt$\alpha$: $\beta$ # $\gamma$\hfil&\hfil\qquad$#$
+ \hfil&\qquad\hfil$#$\hfil\cr
+ \omit \tt ligtable  & \hbox{výsledná sekvence}
+   & \unskip\hbox{případné další změny} \cr
+   \noalign{\medskip\hrule\medskip}
+     |=:|    &  \alpha\gamma\beta &  \alpha\gamma,  \gamma\beta \cr
+     |=:|>   &  \alpha\gamma\beta &  \gamma\beta \cr
+     |=:|>>  &  \alpha\gamma\beta &  \cr
+    \ =:|    &        \gamma\beta &  \gamma\beta \cr
+    \ =:|>   &        \gamma\beta &  \cr
+     |=:     &  \alpha\gamma      &  \alpha\gamma \cr
+     |=:>    &  \alpha\gamma      &  \cr
+    \ =:      &  \gamma            & \cr}
+}$$
+
+Všimneme si, že \uv{obyčejná} ligatura, jakou jistě čtenáři znají
+z~notorického příkladu \uv{fi}, je realizována zápisem \uv{{\tt =:}} podle
+posledního řádku tabulky. V~tomto případě se dvojice \uv{f} a \uv{i}
+promění v~ligaturu \uv{fi} a původní písmena \uv{f} a \uv{i} jsou ze
+sazby odstraněna. Ostatní řádky nabízejí další, rozšířené možnosti.
+
+V~posledním sloupci tabulky jsou uvedeny dvojice, které dále podléhají
+testu na zobecněnou ligaturu nebo implicitní kern. Je-li například
+v~{\tt ligtable} použit operátor \uv{{\tt |:=|>}}, pak kromě zařazení zobecněné
+ligatury $\gamma$ mezi znaky $\alpha$ a $\beta$ se bude dále testovat, zda
+dvojice $\gamma\beta$ netvoří nějakou ligaturu nebo implicitní kern.
+S~touto vlastností je potřeba pracovat opatrně, protože může dojít
+k~rekurzivnímu tvoření zobecněných ligatur až po zaplnění veškeré paměti
+\TeX{}u.
+
+\sub Realizace psaného písma
+
+V~uvedeném písmu podle slabikáře jsem využil jednak vlastnosti hraničních
+znaků a jednak zobecněných ligatur. Písmena malé abecedy mají metriky i
+jednotlivé tahy voleny tak, aby znaky na sebe navazovaly v~šesti sedminách
+střední výšky písma a aby v~tomto bodě měly smluvený, pro všechny dvojice
+písmen stejný, sklon. Příklad:
+
+{\baselineskip=1cm \lineskiplimit=-1cm  \def\\{\hfil\break}
+\def\ukaz#1{\setbox0=\hbox{\noboundary #1\noboundary\/}\leavevmode
+  \lower\dp0\vbox{\hrule height.2pt
+    \hbox{\vrule width.2pt\box0\vrule width.2pt\kern-.2pt}%
+    \hrule height.2pt\kern-.2pt}}
+\leftskip=\parindent  \noindent
+{\slabikar rozvažte} \raise3pt\hbox{=}
+{\slabikar \ukaz{\char3} \ukaz r \ukaz o~\ukaz z~\ukaz
+v~\ukaz a \ukaz ž \ukaz t \kern3pt\ukaz e \ukaz{\char1}
+\par\bigskip}}
+
+Každé slovo začínající malým písmenem (s~výjimkou písmen a, c, d, g, o,~q)
+začíná náběhovou čárkou: {\slabikar\ukaz{\char3}} nebo:
+{\slabikar\ukaz{\char2}}. Jednotlivá písmena už tuto čárku nemají.
+Například písmeno \uv{e} z~tohoto důvodu vypadá dost nezvykle~-- spíše jako
+\uv{c}. Jednotlivá písmena na sebe navazují bez výjimek přesně podle svých
+metrik (metriky znaků jsou v~ukázce vyznačeny obdélníčkem). Nakonec každé
+slovo ukončíme maličkou dotahovou čárečkou: {\slabikar\ukaz{\char1}}. Bez
+ní by totiž tah končil v~šesti sedminách střední výšky písma. Ačkoli by to
+možná z~estetického hlediska bylo lepší, prvňák si to nemůže dovolit a musí
+dokončovat tahy až na střední dotažnici. Naším úkolem bylo vytvořit písmo
+shodné s~psaným písmem ve slabikáři bez kompromisů.
+
+Náběhová i dotahová čárka bude ke každému slovu připojena automaticky
+prostřednictvím mechanismu ligatur a hraničních znaků. Jak již bylo
+řečeno, pro levý hraniční znak použijeme v~\mf{}u v~záznamu 
+{\tt ligtable} návěští \uv{{\tt ||:}}. Například:
+
+\begtt
+ligtable  ||: "-":
+      ...,
+      "r" |=:|> 3,  rcaron |=:|> 3,
+      ...;
+\endtt
+\noindent
+znamená, že levý hraniční znak nebo spojovník tvoří s~následujícím
+\uv{r} nebo \uv{ř} ligaturu s~kódem 3 (levá náběhová čárka). Přitom jednak
+neviditelný hraniční znak nebo spojovník a jednak znak \uv{r} nebo
+\uv{ř} v~sazbě zůstávají. Samozřejmě, že ve fontu je v~místě teček
+naší ukázky postupně vyjmenovaná celá abeceda malých
+písmen. U~výjimečných písmen, která nepotřebují náběhovou čárku,
+můžeme například číst:
+
+\begtt
+ligtable  ||: "-":
+      "a" kern kk#,  aacute kern kk#,
+      ...;
+\endtt
+
+Vidíme, že tyto znaky budou pouze posunuty tak, aby byla kompenzována
+skutečnost, že vyčnívají vlevo ze svých hranic daných metrikou.
+
+Pro pravý hraniční znak je nutno volit v~\mf{}u nějaký kód pomocí proměnné
+{\tt boundarychar}. V~našem fontu byl za pravý hraniční znak zvolen kód~1.
+Tento kód má také pravá dotahová čárka, ale sama od sebe se
+nevykreslí. Musí se použít mechanismus ligatur. Část {\tt ligtable}, která
+řeší tento problém, vypadá takto:
+
+\begtt
+boundarychar:=1;
+ligtable "a": aacute: "A": Aacute:  "b":
+   ...:
+   "z": zcaron: "Z": Zcaron:
+      1 |=:> 1, "-" |=:|>> 1, "!" |=:|>> 1,
+      "?" |=:|>> 1,  "," |=:|>> 1,  "." |=:|>> 1;
+\endtt
+
+Místo teček najdete ve skutečném {\tt mf} souboru všechna
+písmena, která potřebují dotáhnout na střední dotažnici. Kód
+{\tt 1 |=:> 1} zajistí, aby se na konci slov objevila dotahová čárka.
+Ostatní kódy zajistí totéž, pokud na konec slova navazuje spojovník,
+vykřičník, otazník, čárka a tečka.
+
+Pokud dojde k~automatickému dělení slov, \TeX{} po rozdělení znova
+přehodnotí situaci, jak sestavit ligatury. Spojovník na konci řádku proto
+způsobí doplnění dotahu na střední dotažnici pro předchozí písmeno. Na
+začátku dalšího řádku \TeX{} znova vloží levý hraniční znak a váže na něj
+ligatury. Proto se tam objeví správně náběhová čárka.
+
+Velká písmena psané abecedy jsou dvojího druhu. Například \uv{K} se nijak
+neliší od malého písmene. Věc je dokonce jednodušší, protože písmeno
+nevyžaduje levou náběhovou čárku. Jeho dotah končí v~šesti sedminách
+střední výšky písma a může na něj okamžitě navázat další malé písmeno.
+Druhým typem je například písmeno~\uv{B}, které v~základním tvaru vypadá tak,
+jako bychom jej psali samostatně. Pokud se vyskytne těsně za
+písmenem~\uv{B} jakékoli malé písmeno, reaguje tato dvojice vloženou
+zobecněnou ligaturou, která obsahuje spojovací čárku:
+\kern8pt{\slabikar\ukaz{\char4}}. Samozřejmě, původní znaky, které tuto
+ligaturu vyvolaly, v~takové situaci ze sazby nelikvidujeme.
+
+Italické korekce byly vloženy jen k~některým velkým písmenům. Metriky těchto
+písmen jsou totiž navrženy s~ohledem na to, aby přesně navázalo následující
+malé písmeno (prostřednictvím spojovací čárky). Hranice kresby těchto písmen
+proto nemusí odpovídat metrikám. To začne vadit, až budeme klást velká písmena
+těsně vedle sebe (například ve zkratkách). V~takovém případě doporučuji
+vyvolat italickou korekci. Písmo totiž není primárně navrženo pro psaní
+pouze velkými písmeny.
+
+Za zmínku stojí ještě možnost automaticky vyrovnávat některé dvojice malých
+písmen.
+
+{\baselineskip=1cm \lineskiplimit=-1cm  \def\\{\hfil\break}
+\leftskip=\parindent  \noindent
+{\slabikar o\noboundary\kern0pt\noboundary meleta } lépe:
+{\slabikar\ omeleta.}
+\par\bigskip}
+
+Vlevo vidíme nevyrovnané \uv{o} a \uv{m} (stojí opticky daleko od sebe).
+V~pravo je již tato dvojice vyrovnána. S~tabulkou kerningových párů si tady
+nepomůžeme. Proto jsem pro tyto případy vytvořil alternativní zúžené \uv{o}
+(a také b, v~a w). Tyto alternativy mají kratší dotah. Do tabulky ligatur
+jsem zavedl pro dvojice \hbox{(b,o,v,w)--(m,n,v,w,y)} zobecněnou ligaturu,
+která likviduje jen levý znak a nahrazuje jej zúženou alternativou.
+
+V~abecedě malých písmen je jeden zajímavý znak. Je jím písmeno \uv{s}.
+Toto písmeno má ve fontu několik alternativ. 
+
+{\baselineskip=.8cm \lineskiplimit=-1cm 
+základní tvar:  {\slabikar\ \ \ukaz s},       např. {\slabikar les}, 
+
+hlubší tvar:    {\slabikar\ \ \ukaz{\char12}} např. {\slabikar jsme},
+
+plný tvar:      {\slabikar\ \ukaz{\char10}} např. {\slabikar se}.
+\par\bigskip}
+
+Základní tvar je použitelný za všemi písmeny, která mají
+dotah stejného tvaru, jako například písmeno \uv{m}. Kromě toho existuje
+\uv{hlubší} varianta písmene \uv{s}, která se připojuje za písmena končící
+spodní kličkou: G, g, J, j, Q, q, Y, y.  Nakonec ještě existuje samostatná
+plná varianta písmene \uv{s}. Tato varianta se použije
+zcela na začátku slova. Experimenty totiž ukázaly, že pokud sestavíme toto
+písmeno pomocí běžné náběhové čárky, pak výsledek působí na začátku slova
+poněkud přiťáple. Proměnu písmene \uv{s} na začátku slova v~plnou variantu
+zařídíme pomocí ligatury s~levým hraničním znakem. Proměnu za písmenem
+s~kličkou v~hlubší variantu zařídíme pomocí zobecněné ligatury. Všechny
+varianty písmene \uv{s} automaticky připojují pomocí zobecněné ligatury
+spojovací čárku na další písmeno. Používá se stejný mechanismus, jako při
+vložení spojovací čárky třeba za velkým písmenem~\uv{B}. Přitom podle tvaru
+následujícího písmene jsou ve fontu připraveny různě dlouhé spojovací
+čárky. Naprosto stejné alternativy jako~\uv{s} má samozřejmě
+písmeno~\uv{š}.
+
+
+\sub Několik postřehů
+
+Písmo pro první třídu navrhli naši předkové tak, aby bylo jednoduché. Je
+tedy postaveno pouze na několika základních principech. Mezi tyto principy
+patří naprosto stejné napojování pro zcela všechna písmena.
+Jako obvykle platí: v~jednoduchosti je síla.
+
+Toto písmo tvoří základ, ze kterého se pak vyvine rukopis každého z~nás.
+Právě pro svou jednoduchost je do velmi dobrý základ. Je ovšem pravda, že
+někteří jedinci nemají v~podstatě žádný rukopis. S~přibývajícím množstvím
+klávesnic bude těchto jedinců pravděpodobně přibývat. A~to je škoda. Všiml
+jsem si, že tyto bytosti bez rukopisu se poměrně hojně vyskytují v~řadách
+studentů ČVUT. Většinou jsou to dost velcí nešťastníci, protože si nejsou
+schopni zaznamenat ani přednášku. Občas se nějaký student na cvičení
+z~matematiky brání na tabuli napsat souvislé slovo, protože mylně předpokládá,
+že v~matematice se to nesluší a že stačí psát speciální značky. V~takovém
+případě jej většinou požádám, aby napsal aspoň zadání příkladu slovy.
+Objeví-li se na tabuli hůlkové písmo, pak si pomyslím, co se ten student
+vlastně učil v~první třídě. Podle grafických projevů z~písemných prací
+studentů se přitom mohu přesvědčit, že takových lidí je více. Bohužel.
+
+Jako vzor při návrhu písma jsem čerpal ze slabikáře~[5]. I~tyto vzory
+podléhají vývoji, takže můžeme nalézt v~různých slabikářích nepatrné
+odlišnosti. Například písmeno~\uv{z} se může zdát v~této variantě poněkud
+nezvyklé. Zřejmě také záleží na kaligrafovi, který dělal pro příslušný
+slabikář vzory psaného písma.
+
+Hotové písmo zveřejňuji v~\mf{}ovém zdroji na Internetu
+k~volnému použití. Najdete je na
+{\tt http://petr.olsak.net/ftp/olsak/slabikar}.
+Písmo je implementováno do jediného souboru {\tt slabikar.mf}.
+V souboru {\tt ukazka.tex} najdete jednak ukázku písma a také
+doporučení, jak nastavit pro písmo některé parametry \TeX{}u.
+Toto písmo je potřeba brát spíš jako příklad, co všechno \TeX{} dovede.
+Nepředpokládám velké nasazení tohoto písma pro sazbu příštích
+slabikářů. Dokonce takovou věc ani nedoporučuji.
+
+Všechny ukázky ve slabikáři a v~písankách, které jsem měl možnost vidět,
+jsou psány lidskou rukou a ne strojem. Samozřejmě smekám před kaligrafem,
+který ty ukázky vytvořil. Člověk má na první pohled dojem, že to je
+\uv{jak když tiskne}. Fušoval jsem také do kaligrafického řemesla, a proto
+dobře vím, že pokud písmo neobsahuje žádné ozdobné prvky, musí to napsat
+skutečně profesionál. Každá chybička, která by se třeba skryla za ozdobným
+prvkem, je totiž vidět.
+
+Důležité ale je, že písmo v~dnešním slabikáři bylo skutečně napsáno jen
+{\it jak\/} když tiskne a nikoli tištěno doopravdy. Písmu tak neschází
+lidský rozměr, který ten prvňák podvědomě z~toho písma asi cítí. Kdyby se
+pro sazbu ukázek použil stroj (třebaže \TeX), písmo by tento rozměr
+ztratilo. Takové písmo by bylo chladné, studené, stále stejné, bez výrazu,
+tedy vlastně mrtvé. Nepřeji žádným prvňákům, aby se někdy v~budoucnu
+s~takovým chladným písmem setkali. Pokud by snad někoho napadlo mým
+\mf{}ovým písmem tisknout písanky nebo slabikáře, budu první, kdo bude
+proti. Raději se nabídnu jako kaligraf, který požadované ukázky
+napíše rukou.
+
+\sub Literatura
+
+{\hangindent=\parindent \hangafter=1 \parindent=0pt \def\par{{\endgraf}}
+\def\[#1] {\leavevmode\hbox to\hangindent{[#1]\hss}}
+
+\[1] Donald Knuth. {\it The \TeX{}book}, volume A~of
+{\it Computers \& Typesetting}. Addison-Wesley, Reading, MA, USA, 1989.
+
+\[2] Donald Knuth. {\it \TeX: The program}, volume B of
+{\it Computers \& Typesetting}. Addison-Wesley, Reading, MA, USA, 1989.
+
+\[3] Donald Knuth. {\it The \mf{}book}, volume C of
+{\it Computers \& Typesetting}. Addison-Wesley, Reading, MA, USA, 1991.
+
+\[4] Petr Olšák. {\it \TeX{}book naruby}, Konvoj, 1997.
+
+\[5] Jiří Žáček, Helena Zmatlíková. {\it Slabikář}, Alter, 1996.
+
+\par}
+\end
+
+
+
+
+

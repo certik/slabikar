@@ -1,0 +1,68 @@
+% csf-enc.tex
+
+% This file can be used with Unicode engines if you want to use
+% non-Unicode CS-font encoded font.
+
+% After \input csf-enc there is the command \csfenc ready to use.
+% For example:
+%
+% \pdfmapline{=slabikar slabikar <slabikar.pfb}
+% \font\s=slabikar at25pt
+
+% {\s\baselineskip=35pt\csfenc Tady píšu fontem slabikář česky.\par}
+% \bye 
+%
+% The chachacters listed below are set as active when \csfenc macro is called. 
+% Use \csfenc in a group in order to be able to return to normal Unicode encoding.
+
+
+\def\charenc #1 #2 {\catcode`#1=13 \bgroup \lccode`\~=`#1 \lowercase{\egroup \chardef~=#2}}
+
+\def\csfenc{%
+   \charenc á 225 % a-acute
+   \charenc Á 193 % A-acute
+   \charenc ä 228 % a-diaeresis
+   \charenc Ä 196 % A-diaeresis
+   \charenc č 232 % c-caron
+   \charenc Č 200 % C-caron
+   \charenc ď 239 % d-caron
+   \charenc Ď 207 % D-caron
+   \charenc é 233 % e-acute
+   \charenc É 201 % E-acute
+   \charenc ě 236 % e-caron
+   \charenc Ě 204 % E-caron
+   \charenc í 237 % i-acute
+   \charenc Í 205 % I-acute
+   \charenc ĺ 229 % l-acute
+   \charenc Ĺ 197 % L-acute
+   \charenc ľ 181 % l-caron
+   \charenc Ľ 165 % L-caron
+   \charenc ň 242 % n-caron
+   \charenc Ň 210 % N-caron
+   \charenc ó 243 % o-acute
+   \charenc Ó 211 % O-acute
+   \charenc ô 244 % o-circumflex
+   \charenc Ô 212 % O-circumflex
+   \charenc ö 246 % o-diaeresis
+   \charenc Ö 214 % O-diaeresis
+   \charenc ŕ 224 % r-acute
+   \charenc Ŕ 192 % R-acute
+   \charenc ř 248 % r-caron
+   \charenc Ř 216 % R-caron
+   \charenc š 185 % s-caron
+   \charenc Š 169 % S-caron
+   \charenc ť 187 % t-caron
+   \charenc Ť 171 % T-caron
+   \charenc ú 250 % u-acute
+   \charenc Ú 218 % U-acute
+   \charenc ů 249 % u-ring
+   \charenc Ů 217 % U-ring
+   \charenc ü 252 % u-diaeresis
+   \charenc Ü 220 % U-diaeresis
+   \charenc ý 253 % y-acute
+   \charenc Ý 221 % Y-acute
+   \charenc ž 190 % z-caron
+   \charenc Ž 174 % Z-caron
+   \charenc „ 254 % \clqq
+   \charenc “ 255 % \crqq
+}
